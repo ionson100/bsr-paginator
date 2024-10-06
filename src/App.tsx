@@ -1,9 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import {MyPaginator} from "./paginator/indexPaginator";
+import {PropertyBox} from "./paginator/PaginatorProperty";
 
 function App() {
+    let box:PropertyBox={
+        action:undefined,
+        event:undefined,
+    }
   return (
       <div>
 
@@ -84,8 +88,8 @@ function App() {
               asas<br/> asas<br/>
               asas<br/>
               asas<br/>
-              asas<br/>
-          <MyPaginator/>
+              asas33333333333333333333333333333333<br/>
+          <MyPaginator box={box}/>
 
 
 

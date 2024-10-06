@@ -1,9 +1,15 @@
 
 export type EventProperty={
-    maxRows: number,
+    totalRows: number,
+    rowsPageCount:number
     currentPage: number,
 }
+ export type PropertyBox={
+    action?:(event:EventProperty)=>void|undefined
+    event?:(start:number,finish:number,page:number)=>void,
+}
+
 
 export type PaginatorProperty = {
-    action?:(event:EventProperty)=>void,
+    box:PropertyBox,
 }
