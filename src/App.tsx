@@ -1,10 +1,11 @@
 import React, {useRef} from 'react';
 
-import { FaChevronRight } from "react-icons/fa";
-import { FaChevronLeft } from "react-icons/fa";
+//import { FaChevronRight } from "react-icons/fa";
+//import { FaChevronLeft } from "react-icons/fa";
 
 import { FaCaretLeft } from "react-icons/fa6";
 import { FaCaretRight } from "react-icons/fa6";
+import { FaEllipsisH } from "react-icons/fa";
 
 import {Paginator} from "./paginator/paginateBuilder";
 
@@ -14,7 +15,7 @@ function App() {
   return (
       <div>
           <button onClick={()=>{
-              refPaginator.current!.Observer.TotalRows=100;
+              refPaginator.current!.Observer.TotalRows=600;
           }}>Total</button>
 
           <button onClick={()=>{
@@ -26,14 +27,16 @@ function App() {
           }}>size</button>
 
           <Paginator
+              range={4}
               isVisibleSide={true}
               onButtonClick={(val)=>{
                   refPaginator.current!.Observer.CurrentPage=val
               }}
-              first={<FaCaretLeft color={"green"}/>}
-              last={<FaCaretRight color={"green"}/>}
-              previous={<FaChevronLeft color={"green"}/>}
-              next={<FaChevronRight color={"green"}/>}
+              first={<FaCaretLeft color={"green"} size={40}/>}
+              last={<FaCaretRight color={"green"} size={40}/>}
+              previous={'Previous'}
+              next={'Next'}
+              ellipsis={<FaEllipsisH/>}
               ref={refPaginator}/>
 
 

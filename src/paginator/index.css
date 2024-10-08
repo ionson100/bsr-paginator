@@ -1,38 +1,73 @@
-.bsr-wrapper-paginator{
+.bsr-wrapper-paginator {
     position: fixed;
     bottom: 0;
     width: 100%;
-    /*background: yellow;*/
-
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-.bsr-inner-paginator{
+
+.bsr-inner-paginator {
     display: flex;
     justify-content: center;
-
-
 }
-.bsr-points{
+
+.bsr-points {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
     margin: 3px;
+
     font-size: 20px;
     font-weight: bold;
-
 }
-.bsr-button{
-    display: flex;
+
+.bsr-button {
+    display:flex;
+
     justify-content: center;
-    padding: 10px;
+    align-items: center;
+    height: 50px;
+    min-width: 50px;
+    margin: 5px;
+    font-size: 25px;
+    font-weight: bold;
+    color: #6d6a6a;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #dedcdc;
+}
+
+.bsr-button-side {
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    color: #6d6a6a;
     margin: 3px;
     font-size: 20px;
     font-weight: bold;
     cursor: pointer;
 }
-.bsr-button:hover{
+.bsr-button-ellipsis {
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    color: #6d6a6a;
+    margin: 3px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bsr-button:hover {
     background-color: darkgrey;
 }
-.bsr-button-selection{
+
+.bsr-button-selection {
     background-color: #87ddf5;
 }

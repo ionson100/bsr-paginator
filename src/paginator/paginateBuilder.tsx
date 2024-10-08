@@ -6,21 +6,31 @@ export type PaginatorProperty = {
     previous?: string | ReactElement | undefined | null
     first?: string | ReactElement | undefined | null
     last?: string | ReactElement | undefined | null
-    onButtonClick?: (val: number) => void
+    ellipsis?: string | ReactElement | undefined | null
+    onButtonClick?: (val: number,pages:number) => void
     isVisibleSide?: boolean
+    range?: number
+    classNameButton?: string
+    classNameButtonSelectted?: string
+    classNameEllipsis?: string
+    classNamePoint?: string
+    className?: string
+
 }
 export type ObserverPaginator = {
     TotalRows: number
     CurrentPage: number
     PageSize: number
+
 }
 
 export class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
     private refWrapperPaginator = React.createRef<HTMLDivElement>()
+    private pages:number=0
 
     constructor(props: Readonly<PaginatorProperty>) {
         super(props);
-        this.state = {TotalRows: 30, PageSize: 5, CurrentPage: 1};
+        this.state = {TotalRows: 200, PageSize: 20, CurrentPage: 1};
     }
 
     setStatePaginator(total: number, page: number, size: number) {
@@ -29,7 +39,6 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
             TotalRows: total,
             PageSize: size
         })
-
     }
 
     get Observer(): ObserverPaginator {
@@ -41,7 +50,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                 return THIS.state.TotalRows;
             },
             set TotalRows(val: number) {
-                THIS.setStatePaginator(val, THIS.state.CurrentPage, THIS.state.PageSize)
+                THIS.setStatePaginator(val, 1, THIS.state.PageSize)
             },
             get CurrentPage() {
                 return THIS.state.CurrentPage;
@@ -53,20 +62,22 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                 return THIS.state.PageSize
             },
             set PageSize(val: number) {
-                THIS.setStatePaginator(THIS.state.TotalRows, THIS.state.CurrentPage, val)
-            }
+                THIS.setStatePaginator(THIS.state.TotalRows, 1, val)
+            },
+
         }
     }
 
     Click(val: number) {
         if (this.props.onButtonClick) {
-            this.props.onButtonClick(val)
+            this.props.onButtonClick(val,this.pages)
         }
     }
 
+
     innerLeft(list: ReactElement[]) {
         if (this.props.next) {
-            list.push(<div className={'bsr-button'} onClick={() => {
+            list.push(<div className={this.props.classNameEllipsis ?? 'bsr-button-side'} onClick={() => {
                 if (this.state.CurrentPage != 1) {
                     this.Click(1)
                 }
@@ -75,7 +86,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
             </div>)
         }
         if (this.props.last) {
-            list.push(<div className={'bsr-button'} onClick={() => {
+            list.push(<div className={this.props.classNameEllipsis ?? 'bsr-button-side'} onClick={() => {
                 const e = this.state.CurrentPage - 1
                 if (e > 0) {
                     this.Click(e)
@@ -98,7 +109,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     innerRight(list: ReactElement[], pages: number) {
         if (this.props.next) {
-            list.push(<div className={'bsr-button'} onClick={() => {
+            list.push(<div className={this.props.classNameEllipsis ?? 'bsr-button-side'} onClick={() => {
                 const e = this.state.CurrentPage + 1
                 if (e <= pages) {
                     this.Click(e)
@@ -106,7 +117,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
             }}>{this.props.next}</div>)
         }
         if (this.props.last) {
-            list.push(<div className={'bsr-button'} onClick={() => {
+            list.push(<div className={this.props.classNameEllipsis ?? 'bsr-button-side'} onClick={() => {
                 this.Click(pages)
             }}>{this.props.last}</div>)
         }
@@ -126,49 +137,68 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     renderButton() {
         const list: ReactElement[] = []
-        const pages: number = Math.ceil(this.state.TotalRows / this.state.PageSize)
-        if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || pages === 1) {
+        this.pages = Math.ceil(this.state.TotalRows / this.state.PageSize)
+
+        if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
             list.length = 0;
             this.refWrapperPaginator.current!.style.display = 'none'
             return null;
         }
+        const range = this.props.range ?? 3
 
-        let start = 0
-        let delta = 0;
-        if (pages <= 3) {
+        let start: number
+        let delta: number;
+        let appendPointPost = false;
+        let appendPointPref = false;
+        if (this.pages <= range) {
             start = 1
-            delta = pages + 1;
-        } else if (this.state.CurrentPage <= 3-1) {
+            delta = this.pages + 1;
+
+        } else if (this.state.CurrentPage <= range - 1) {
+
 
             start = 1
-            delta = 3 + 1;
-        } else if (this.state.CurrentPage >=3&&this.state.CurrentPage<(pages-3)) {
+            delta = range + 1;
+            if (this.pages > range) {
+                appendPointPost = true;
+            }
 
+        } else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range)) {
 
-            start = this.state.CurrentPage-1
-            delta = this.state.CurrentPage + 3-1;
-        }else{
-            start = pages-4
-            delta=pages+1
+            const del=Math.ceil(range/2)
+            appendPointPref = true;
+            appendPointPost = true
+            start = this.state.CurrentPage - del
+            delta = this.state.CurrentPage + range - del;
+        } else {
+            //const del=Math.ceil(range/2)
+            const s=this.pages - range - 1
+            appendPointPref = true;
+            start = s===0?1:s
+            delta = this.pages + 1
         }
 
         this.renderLeftSide(list)
 
-        //alert(start +' '+ delta)
+        if (appendPointPref) {
+            list.push(<div
+                className={this.props.classNameEllipsis ?? 'bsr-button-ellipsis'}>{this.props.ellipsis ?? '...'}</div>)
+        }
 
         for (let i = start; i < delta; i++) {
             let selectClass = ''
             if (this.state.CurrentPage === i) {
-                selectClass = ' bsr-button-selection'
+                selectClass = this.props.classNameButtonSelectted ?? 'bsr-button-selection'
             }
-            list.push(<div className={'bsr-button' + selectClass} onClick={() => {
+            list.push(<div className={this.props.classNameButton ?? 'bsr-button ' + selectClass} onClick={() => {
                 this.Click(i);
             }}>{i}</div>)
         }
-        if (pages > 3) {
-            list.push(<div className={'bsr-points'}>...</div>)
+        if (appendPointPost) {
+            list.push(<div
+                className={this.props.classNameEllipsis ?? 'bsr-button-ellipsis'}>{this.props.ellipsis ?? '...'}</div>)
         }
-        this.renderRightSide(list, pages)
+        this.renderRightSide(list, this.pages)
 
         return list
 
@@ -179,7 +209,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     render() {
         return (
             <div ref={this.refWrapperPaginator} className={'bsr-wrapper-paginator'}>
-                <div className={'bsr-inner-paginator'}>
+                <div className={this.props.className ?? 'bsr-inner-paginator'}>
                     {
                         this.renderButton()?.map(a => {
                             return a;
