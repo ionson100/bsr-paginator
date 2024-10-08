@@ -1,6 +1,38 @@
-.bsr-paginator{
+.bsr-wrapper-paginator{
     position: fixed;
     bottom: 0;
     width: 100%;
-    background: yellow;
+    /*background: yellow;*/
+
+}
+.bsr-inner-paginator{
+    display: flex;
+    justify-content: center;
+
+
+}
+.bsr-points{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 3px;
+    font-size: 20px;
+    font-weight: bold;
+
+}
+.bsr-button{
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    margin: 3px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.bsr-button:hover{
+    background-color: darkgrey;
+}
+.bsr-button-selection{
+    background-color: #87ddf5;
 }
