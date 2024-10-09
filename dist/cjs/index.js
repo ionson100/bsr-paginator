@@ -48,8 +48,6 @@ var Paginator = /** @class */ (function (_super) {
     __extends(Paginator, _super);
     function Paginator(props) {
         var _this = _super.call(this, props) || this;
-        _this.sdd = { total: 0, pagee: 0 };
-        _this.pageClick = false;
         _this.mapPage = new Map();
         _this.isAddMap = false;
         _this.refPaginator = React.createRef();
@@ -65,49 +63,32 @@ var Paginator = /** @class */ (function (_super) {
             PageSize: size
         });
     };
-    Object.defineProperty(Paginator.prototype, "Observer", {
+    Paginator.prototype.SetState = function (totalRows, pageSize, currentPage, callback) {
+        var _this = this;
+        setTimeout(function () {
+            _this.setState({
+                CurrentPage: currentPage !== null && currentPage !== void 0 ? currentPage : _this.state.CurrentPage,
+                PageSize: pageSize !== null && pageSize !== void 0 ? pageSize : _this.state.PageSize,
+                TotalRows: totalRows !== null && totalRows !== void 0 ? totalRows : _this.state.TotalRows,
+            }, callback);
+        });
+    };
+    Object.defineProperty(Paginator.prototype, "State", {
         get: function () {
             var THIS = this;
             return {
-                InitPaginator: function (totalRows, pageSize, currentPage) {
-                    setTimeout(function () {
-                        THIS.setState({
-                            CurrentPage: currentPage,
-                            PageSize: pageSize,
-                            TotalRows: totalRows
-                        });
-                    });
-                },
                 get TotalRows() {
                     return THIS.state.TotalRows;
-                },
-                set TotalRows(val) {
-                    THIS.mapPage.clear();
-                    if (THIS.state.TotalRows === val)
-                        return;
-                    THIS.setStatePaginator(val, 1, THIS.state.PageSize);
                 },
                 get CurrentPage() {
                     return THIS.state.CurrentPage;
                 },
-                set CurrentPage(val) {
-                    if (val > THIS.pages || val <= 0) {
-                        throw new Error('CurrentPage must be greater than 0 and less ' + THIS.pages);
-                    }
-                    if (THIS.state.CurrentPage === val)
-                        return;
-                    THIS.pageClick = true;
-                    THIS.setStatePaginator(THIS.state.TotalRows, val, THIS.state.PageSize);
-                },
                 get PageSize() {
                     return THIS.state.PageSize;
                 },
-                set PageSize(val) {
-                    THIS.mapPage.clear();
-                    if (THIS.state.PageSize === val)
-                        return;
-                    THIS.setStatePaginator(THIS.state.TotalRows, 1, val);
-                },
+                get PagesCount() {
+                    return THIS.pages;
+                }
             };
         },
         enumerable: false,
@@ -115,11 +96,6 @@ var Paginator = /** @class */ (function (_super) {
     });
     Paginator.prototype.Click = function (val) {
         if (this.props.onButtonClick) {
-            if (this.pageClick) {
-                this.pageClick = false;
-                this.props.onButtonClick(val, this.pages);
-                return;
-            }
             if (this.props.useDoubleSending) {
                 this.props.onButtonClick(val, this.pages);
             }
@@ -129,7 +105,7 @@ var Paginator = /** @class */ (function (_super) {
                 }
             }
         }
-        this.Observer.CurrentPage = val;
+        this.setStatePaginator(this.state.TotalRows, val, this.state.PageSize);
     };
     Paginator.prototype.innerLeft = function (list) {
         var _this = this;
@@ -186,11 +162,11 @@ var Paginator = /** @class */ (function (_super) {
     Paginator.prototype.renderButton = function () {
         var _this = this;
         var _a, _b, _c;
-        //
-        // alert(this.state.CurrentPage===0||this.state.PageSize===0||this.state.TotalRows===0)
-        if (this.state.CurrentPage === 0 || this.state.PageSize === 0 || this.state.TotalRows === 0) {
-            if (this.refPaginator.current)
-                this.refPaginator.current.style.display = 'none';
+        if (!this.refPaginator.current)
+            return;
+        this.refPaginator.current.style.display = 'flex';
+        if (this.state.CurrentPage <= 0 || this.state.PageSize <= 0 || this.state.TotalRows <= 0) {
+            this.refPaginator.current.style.display = 'none';
             return null;
         }
         //alert(this.state.CurrentPage+' '+this.state.PageSize+' '+this.state.TotalRows)
@@ -204,11 +180,9 @@ var Paginator = /** @class */ (function (_super) {
         if (this.state.CurrentPage === this.pages) {
             this.statePosition = statePosition.last;
         }
-        if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
+        if (this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
             list.length = 0;
-            if (this.refPaginator.current)
-                this.refPaginator.current.style.display = 'none';
-            return null;
+            this.refPaginator.current.style.display = 'none';
         }
         var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 3;
         var start;
@@ -270,11 +244,8 @@ var Paginator = /** @class */ (function (_super) {
             var selectClass = '';
             if (this_1.state.CurrentPage === i) {
                 selectClass = 'bsr-button-selection';
-                if (this_1.pageClick) {
-                    this_1.Click(i);
-                }
             }
-            list.push(React.createElement("button", { style: this_1.props.styleButton, key: "".concat(i, "-page"), className: 'bsr-button ' + selectClass, onClick: function () {
+            list.push(React.createElement("button", { "data-pg": i, style: this_1.props.styleButton, key: "".concat(i, "-page"), className: 'bsr-button ' + selectClass, onClick: function () {
                     _this.Click(i);
                 } }, i));
         };
