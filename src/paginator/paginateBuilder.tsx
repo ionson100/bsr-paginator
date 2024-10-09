@@ -13,6 +13,9 @@ export type PaginatorProperty = {
     range?: number
     className?: string
     useDoubleSending?: boolean
+    style?: React.CSSProperties | undefined,
+    styleButton?: React.CSSProperties | undefined,
+
 
 }
 export type ObserverPaginator = {
@@ -26,6 +29,10 @@ type pageState = {
     delta: number
 }
 
+enum statePosition {
+    none = -1, first = 0, last
+}
+
 export class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
 
     private pageClick = false
@@ -33,6 +40,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     private isAddMap = false
     private refPaginator = React.createRef<HTMLDivElement>()
     private pages: number = 0
+    private statePosition: statePosition = statePosition.none
 
     constructor(props: Readonly<PaginatorProperty>) {
         super(props);
@@ -107,28 +115,36 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     private innerLeft(list: ReactElement[]) {
         if (this.props.first) {
-            list.push(<div key={'45545'} className={'bsr-button-side'} onClick={() => {
-                if (this.state.CurrentPage !== 1) {
-                    this.Click(1)
-                }
-            }}>
+            list.push(<button
+                disabled={this.statePosition === statePosition.first}
+                key={'45545'}
+                className={'bsr-button-side'}
+                onClick={() => {
+                    if (this.state.CurrentPage !== 1) {
+                        this.Click(1)
+                    }
+                }}>
                 {this.props.first}
-            </div>)
+            </button>)
         }
 
-        list.push(<div key={'5656'} className={'bsr-button-side'} onClick={() => {
-            const e = this.state.CurrentPage - 1
-            if (e > 0) {
-                this.Click(e)
-            }
-        }}>
+        list.push(<button
+            disabled={this.statePosition === statePosition.first}
+            key={'5656'}
+            className={'bsr-button-side'}
+            onClick={() => {
+                const e = this.state.CurrentPage - 1
+                if (e > 0) {
+                    this.Click(e)
+                }
+            }}>
             {this.props.previous ?? 'Previous'}
-        </div>)
+        </button>)
 
     }
 
     private renderLeftSide(list: ReactElement[]) {
-        if (this.props.isVisibleSide??true) {
+        if (this.props.isVisibleSide ?? true) {
             this.innerLeft(list)
             return
         }
@@ -139,23 +155,32 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     private innerRight(list: ReactElement[], pages: number) {
 
-        list.push(<div key={'we4'} className={'bsr-button-side'} onClick={() => {
-            const e = this.state.CurrentPage + 1
-            if (e <= pages) {
-                this.Click(e)
-            }
-        }}>{this.props.next ?? 'Next'}</div>)
+
+        list.push(<button
+            disabled={this.statePosition === statePosition.last}
+            key={'we4'}
+            className={'bsr-button-side'}
+            onClick={() => {
+                const e = this.state.CurrentPage + 1
+                if (e <= pages) {
+                    this.Click(e)
+                }
+            }}>{this.props.next ?? 'Next'}</button>)
 
         if (this.props.last) {
-            list.push(<div key={'4356'} className={'bsr-button-side'} onClick={() => {
-                this.Click(pages)
-            }}>{this.props.last}</div>)
+            list.push(<button
+                disabled={this.statePosition === statePosition.last}
+                key={'4356'}
+                className={'bsr-button-side'}
+                onClick={() => {
+                    this.Click(pages)
+                }}>{this.props.last}</button>)
         }
     }
 
     private renderRightSide(list: ReactElement[], pages: number) {
 
-        if (this.props.isVisibleSide??true) {
+        if (this.props.isVisibleSide ?? true) {
             this.innerRight(list, pages)
             return
         }
@@ -167,9 +192,18 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
 
     private renderButton() {
+        this.statePosition = statePosition.none
         this.isAddMap = false;
         const list: ReactElement[] = []
         this.pages = Math.ceil(this.state.TotalRows / this.state.PageSize)
+        if (this.state.CurrentPage === 1) {
+            this.statePosition = statePosition.first
+        }
+
+        if (this.state.CurrentPage === this.pages) {
+
+            this.statePosition = statePosition.last
+        }
 
 
         if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
@@ -250,10 +284,13 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     this.Click(i);
                 }
             }
-            list.push(<button key={`${i}-page`} className={'bsr-button ' + selectClass}
-                              onClick={() => {
-                                  this.Click(i);
-                              }}>{i}</button>)
+            list.push(<button
+                style={this.props.styleButton}
+                key={`${i}-page`}
+                className={'bsr-button ' + selectClass}
+                onClick={() => {
+                    this.Click(i);
+                }}>{i}</button>)
         }
         if (appendPointPost) {
             list.push(<div key={'point-pres'}
@@ -265,14 +302,19 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
 
     }
-    public get Paginator(){
+
+    public get Paginator() {
         return this.refPaginator.current
     }
 
 
     render() {
         return (
-            <div ref={this.refPaginator} id={this.props.id} className={this.props.className ?? 'bsr-wrapper-paginator'}>
+            <div
+                style={this.props.style}
+                ref={this.refPaginator}
+                id={this.props.id}
+                className={this.props.className ?? 'bsr-wrapper-paginator'}>
                 {
                     this.renderButton()
                 }
