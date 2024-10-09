@@ -44,7 +44,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     constructor(props: Readonly<PaginatorProperty>) {
         super(props);
-        this.state = {TotalRows: 200, PageSize: 10, CurrentPage: 1};
+        this.state = {TotalRows: 0, PageSize: 0, CurrentPage: 0};
     }
 
     private setStatePaginator(total: number, page: number, size: number) {
