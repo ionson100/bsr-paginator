@@ -21,6 +21,7 @@ type ObserverPaginator = {
     PageSize: number;
 };
 declare class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
+    private sdd;
     private pageClick;
     private mapPage;
     private isAddMap;
@@ -29,7 +30,12 @@ declare class Paginator extends React.Component<PaginatorProperty, ObserverPagin
     private statePosition;
     constructor(props: Readonly<PaginatorProperty>);
     private setStatePaginator;
-    get Observer(): ObserverPaginator;
+    get Observer(): {
+        InitPaginator?(totalRows: number, pageSize: number, currentPage: number): void;
+        PageSize: number;
+        TotalRows: number;
+        CurrentPage: number;
+    };
     private Click;
     private innerLeft;
     private renderLeftSide;

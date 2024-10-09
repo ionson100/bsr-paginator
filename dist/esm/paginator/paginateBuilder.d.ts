@@ -1,5 +1,4 @@
 import React, { ReactElement } from "react";
-import './index.css';
 export type PaginatorProperty = {
     id?: string;
     next?: string | ReactElement | undefined | null;
@@ -21,6 +20,7 @@ export type ObserverPaginator = {
     PageSize: number;
 };
 export declare class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
+    private sdd;
     private pageClick;
     private mapPage;
     private isAddMap;
@@ -29,7 +29,12 @@ export declare class Paginator extends React.Component<PaginatorProperty, Observ
     private statePosition;
     constructor(props: Readonly<PaginatorProperty>);
     private setStatePaginator;
-    get Observer(): ObserverPaginator;
+    get Observer(): {
+        InitPaginator?(totalRows: number, pageSize: number, currentPage: number): void;
+        PageSize: number;
+        TotalRows: number;
+        CurrentPage: number;
+    };
     private Click;
     private innerLeft;
     private renderLeftSide;

@@ -38,36 +38,6 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-function styleInject(css, ref) {
-  if ( ref === void 0 ) ref = {};
-  var insertAt = ref.insertAt;
-
-  if (typeof document === 'undefined') { return; }
-
-  var head = document.head || document.getElementsByTagName('head')[0];
-  var style = document.createElement('style');
-  style.type = 'text/css';
-
-  if (insertAt === 'top') {
-    if (head.firstChild) {
-      head.insertBefore(style, head.firstChild);
-    } else {
-      head.appendChild(style);
-    }
-  } else {
-    head.appendChild(style);
-  }
-
-  if (style.styleSheet) {
-    style.styleSheet.cssText = css;
-  } else {
-    style.appendChild(document.createTextNode(css));
-  }
-}
-
-var css_248z = ".bsr-wrapper-paginator {\r\n    display: flex;\r\n    justify-content: center;\r\n\r\n    position: fixed;\r\n    left: 50%;\r\n    bottom: 20px;\r\n    transform: translate(-50%, -50%);\r\n    margin: 0 auto;\r\n\r\n    width: fit-content;\r\n    -webkit-touch-callout: none;\r\n    -webkit-user-select: none;\r\n\r\n    -moz-user-select: none;\r\n    -ms-user-select: none;\r\n    user-select: none;\r\n\r\n    padding: 10px;\r\n    border: 1px #87ddf5 solid;\r\n    border-radius: 10px;\r\n    background: #fcfbfb;\r\n\r\n}\r\n\r\n.bsr-points {\r\n    display: flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    margin: 3px;\r\n    font-size: 20px;\r\n    font-weight: bold;\r\n}\r\n\r\n.bsr-button {\r\n\r\n    height: 50px;\r\n    min-width: 50px;\r\n    margin: 5px;\r\n    font-size: 25px;\r\n\r\n    color: #6d6a6a;\r\n    cursor: pointer;\r\n    border-radius: 5px;\r\n    background-color: #dedcdc;\r\n    border: none;\r\n}\r\n\r\n\r\n.bsr-button-ellipsis {\r\n\r\n    display:flex;\r\n    justify-content: center;\r\n    align-items: center;\r\n    color: #6d6a6a;\r\n    margin: 3px 20px;\r\n    font-size: 20px;\r\n    font-weight: bold;\r\n\r\n}\r\n\r\n.bsr-button:hover {\r\n    background-color: darkgrey;\r\n}\r\n.bsr-button:focus {\r\n    background-color: #59ceef;\r\n    border: none;\r\n    outline: none;\r\n}\r\n\r\n.bsr-button-selection {\r\n    background-color: #87ddf5;\r\n\r\n}\r\n\r\n.bsr-button-side {\r\n\r\n    height: 50px;\r\n    min-width: 50px;\r\n    margin: 5px;\r\n    font-size: 25px;\r\n    padding-left: 20px;\r\n    padding-right: 20px;\r\n\r\n\r\n    color: #6d6a6a;\r\n    cursor: pointer;\r\n    border-radius: 5px;\r\n    border: none;\r\n}\r\n.bsr-button-side:hover{\r\n    background-color: #dedcdc;\r\n}\r\n.bsr-button-side:active{\r\n    background-color: #c7c6c6;\r\n}\r\n.bsr-button-side:disabled{\r\n    background-color: #dcd4d4;\r\n    opacity: 50%;\r\n    cursor: not-allowed;\r\n}\r\n\r\n";
-styleInject(css_248z);
-
 var statePosition;
 (function (statePosition) {
     statePosition[statePosition["none"] = -1] = "none";
@@ -78,13 +48,14 @@ var Paginator = /** @class */ (function (_super) {
     __extends(Paginator, _super);
     function Paginator(props) {
         var _this = _super.call(this, props) || this;
+        _this.sdd = { total: 0, pagee: 0 };
         _this.pageClick = false;
         _this.mapPage = new Map();
         _this.isAddMap = false;
         _this.refPaginator = React.createRef();
         _this.pages = 0;
         _this.statePosition = statePosition.none;
-        _this.state = { TotalRows: 200, PageSize: 10, CurrentPage: 1 };
+        _this.state = { TotalRows: 0, PageSize: 1, CurrentPage: 1 };
         return _this;
     }
     Paginator.prototype.setStatePaginator = function (total, page, size) {
@@ -98,6 +69,15 @@ var Paginator = /** @class */ (function (_super) {
         get: function () {
             var THIS = this;
             return {
+                InitPaginator: function (totalRows, pageSize, currentPage) {
+                    setTimeout(function () {
+                        THIS.setState({
+                            CurrentPage: currentPage,
+                            PageSize: pageSize,
+                            TotalRows: totalRows
+                        });
+                    });
+                },
                 get TotalRows() {
                     return THIS.state.TotalRows;
                 },
@@ -149,6 +129,7 @@ var Paginator = /** @class */ (function (_super) {
                 }
             }
         }
+        this.Observer.CurrentPage = val;
     };
     Paginator.prototype.innerLeft = function (list) {
         var _this = this;
@@ -205,6 +186,14 @@ var Paginator = /** @class */ (function (_super) {
     Paginator.prototype.renderButton = function () {
         var _this = this;
         var _a, _b, _c;
+        //
+        // alert(this.state.CurrentPage===0||this.state.PageSize===0||this.state.TotalRows===0)
+        if (this.state.CurrentPage === 0 || this.state.PageSize === 0 || this.state.TotalRows === 0) {
+            if (this.refPaginator.current)
+                this.refPaginator.current.style.display = 'none';
+            return null;
+        }
+        //alert(this.state.CurrentPage+' '+this.state.PageSize+' '+this.state.TotalRows)
         this.statePosition = statePosition.none;
         this.isAddMap = false;
         var list = [];
@@ -217,7 +206,8 @@ var Paginator = /** @class */ (function (_super) {
         }
         if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
             list.length = 0;
-            this.refPaginator.current.style.display = 'none';
+            if (this.refPaginator.current)
+                this.refPaginator.current.style.display = 'none';
             return null;
         }
         var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 3;
@@ -248,7 +238,7 @@ var Paginator = /** @class */ (function (_super) {
                     appendPointPost = true;
                 }
             }
-            else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range)) {
+            else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range + 2)) {
                 this.isAddMap = true;
                 this.mapPage.clear();
                 var del = Math.ceil(range / 2);
@@ -260,9 +250,9 @@ var Paginator = /** @class */ (function (_super) {
             else {
                 this.mapPage.clear();
                 //const del=Math.ceil(range/2)
-                var s = this.pages - range - 1;
+                var s = this.pages - range + 1;
                 appendPointPref = true;
-                start = s === 0 ? 1 : s;
+                start = s <= 0 ? 1 : s;
                 delta = this.pages + 1;
             }
         }

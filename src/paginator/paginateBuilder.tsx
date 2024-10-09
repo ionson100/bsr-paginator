@@ -1,5 +1,4 @@
 import React, {ReactElement} from "react";
-import './index.css'
 
 export type PaginatorProperty = {
     id?: string,
@@ -22,7 +21,6 @@ export type ObserverPaginator = {
     TotalRows: number
     CurrentPage: number
     PageSize: number
-
 }
 type pageState = {
     start: number
@@ -35,6 +33,7 @@ enum statePosition {
 
 export class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
 
+
     private pageClick = false
     private mapPage = new Map<number, pageState>();
     private isAddMap = false
@@ -44,7 +43,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
     constructor(props: Readonly<PaginatorProperty>) {
         super(props);
-        this.state = {TotalRows: 0, PageSize: 0, CurrentPage: 0};
+        this.state = {TotalRows: 0, PageSize: 1, CurrentPage: 1};
     }
 
     private setStatePaginator(total: number, page: number, size: number) {
@@ -56,11 +55,32 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
         })
     }
 
-    public get Observer(): ObserverPaginator {
+    public get Observer():
+        {
+            InitPaginator?(totalRows: number, pageSize: number, currentPage: number): void;
+            PageSize: number;
+            TotalRows: number;
+            CurrentPage: number
+        }
+    {
 
         const THIS = this;
 
         return {
+
+            InitPaginator(totalRows: number, pageSize: number, currentPage: number): void {
+
+                setTimeout(()=>{
+                    THIS.setState({
+                        CurrentPage: currentPage,
+                        PageSize: pageSize,
+                        TotalRows: totalRows
+                    })
+                })
+
+
+            },
+
             get TotalRows() {
                 return THIS.state.TotalRows;
             },
@@ -108,6 +128,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                 }
             }
         }
+        this.Observer.CurrentPage = val
 
 
     }
@@ -192,6 +213,16 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
 
     private renderButton() {
+        //
+        // alert(this.state.CurrentPage===0||this.state.PageSize===0||this.state.TotalRows===0)
+        if (this.state.CurrentPage === 0 || this.state.PageSize === 0 || this.state.TotalRows === 0) {
+
+
+            if (this.refPaginator.current)
+                this.refPaginator.current!.style.display = 'none'
+            return null;
+        }
+        //alert(this.state.CurrentPage+' '+this.state.PageSize+' '+this.state.TotalRows)
         this.statePosition = statePosition.none
         this.isAddMap = false;
         const list: ReactElement[] = []
@@ -208,7 +239,8 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
         if (this.state.TotalRows === 0 || this.state.PageSize === 0 || this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
             list.length = 0;
-            this.refPaginator.current!.style.display = 'none'
+            if (this.refPaginator.current)
+                this.refPaginator.current!.style.display = 'none'
             return null;
         }
         const range = this.props.range ?? 3
@@ -240,7 +272,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     appendPointPost = true;
                 }
 
-            } else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range)) {
+            } else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range+2)) {
 
                 this.isAddMap = true;
                 this.mapPage.clear()
@@ -252,12 +284,13 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                 start = this.state.CurrentPage - del
                 delta = this.state.CurrentPage + range - del;
             } else {
+
                 this.mapPage.clear()
                 //const del=Math.ceil(range/2)
-                const s = this.pages - range - 1
+                const s = this.pages - range +1
                 appendPointPref = true;
-                start = s === 0 ? 1 : s
-                delta = this.pages + 1
+                start = s <= 0 ? 1 : s
+                delta = this.pages+1
             }
         }
 
