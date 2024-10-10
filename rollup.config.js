@@ -3,7 +3,7 @@ import typescript from "@rollup/plugin-typescript";
 import {dts} from "rollup-plugin-dts";
 import resolve from "@rollup/plugin-node-resolve";
 import postcss from "rollup-plugin-postcss";
-import peerDepsExternal from "rollup-plugin-peer-deps-external";
+//import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import external from 'rollup-plugin-peer-deps-external';
 // eslint-disable-next-line no-undef
 const packageJson = require("./package.json");

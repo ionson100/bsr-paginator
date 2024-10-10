@@ -4,21 +4,20 @@
 
     position: fixed;
     left: 50%;
-    bottom: 20px;
+    bottom: -20px;
     transform: translate(-50%, -50%);
     margin: 0 auto;
 
     width: fit-content;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
-
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 
-    padding: 10px;
-    border: 1px #87ddf5 solid;
-    border-radius: 10px;
+    padding: 5px 10px;
+    border: 1px #058b17 solid;
+    border-radius: 0;
     background: #fcfbfb;
 
 }
@@ -34,10 +33,10 @@
 
 .bsr-button {
 
-    height: 50px;
-    min-width: 50px;
+    height: 30px;
+    min-width: 30px;
     margin: 5px;
-    font-size: 25px;
+    font-size: 18px;
 
     color: #6d6a6a;
     cursor: pointer;
@@ -63,24 +62,27 @@
     background-color: darkgrey;
 }
 .bsr-button:focus {
-    background-color: #59ceef;
+    background-color: green;
     border: none;
     outline: none;
+    color: white;
 }
 
 .bsr-button-selection {
-    background-color: #87ddf5;
+    background-color: green;
+    color: white;
 
 }
 
 .bsr-button-side {
-
-    height: 50px;
-    min-width: 50px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    min-width: 30px;
     margin: 5px;
-    font-size: 25px;
-    padding-left: 20px;
-    padding-right: 20px;
+    font-size: 18px;
+
 
 
     color: #6d6a6a;

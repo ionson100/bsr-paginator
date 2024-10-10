@@ -184,7 +184,10 @@ var Paginator = /** @class */ (function (_super) {
             list.length = 0;
             this.refPaginator.current.style.display = 'none';
         }
-        var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 3;
+        var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 5;
+        if (range <= 3) {
+            range = 4;
+        }
         var start;
         var delta;
         var appendPointPost = false;

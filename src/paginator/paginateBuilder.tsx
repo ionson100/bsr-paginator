@@ -209,7 +209,10 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
             this.refPaginator.current!.style.display = 'none'
 
         }
-        const range = this.props.range ?? 3
+        let range = this.props.range ?? 5
+        if(range<=3){
+            range=4;
+        }
 
         let start: number
         let delta: number;
