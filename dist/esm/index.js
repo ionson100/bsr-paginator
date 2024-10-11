@@ -36,21 +36,95 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
+/**
+ * Convert array of 16 byte values to UUID string format of the form:
+ * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+ */
+var byteToHex = [];
+for (var i = 0; i < 256; ++i) {
+  byteToHex.push((i + 0x100).toString(16).slice(1));
+}
+function unsafeStringify(arr, offset = 0) {
+  // Note: Be careful editing this code!  It's been tuned for performance
+  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
+  //
+  // Note to future-self: No, you can't remove the `toLowerCase()` call.
+  // REF: https://github.com/uuidjs/uuid/pull/677#issuecomment-1757351351
+  return (byteToHex[arr[offset + 0]] + byteToHex[arr[offset + 1]] + byteToHex[arr[offset + 2]] + byteToHex[arr[offset + 3]] + '-' + byteToHex[arr[offset + 4]] + byteToHex[arr[offset + 5]] + '-' + byteToHex[arr[offset + 6]] + byteToHex[arr[offset + 7]] + '-' + byteToHex[arr[offset + 8]] + byteToHex[arr[offset + 9]] + '-' + byteToHex[arr[offset + 10]] + byteToHex[arr[offset + 11]] + byteToHex[arr[offset + 12]] + byteToHex[arr[offset + 13]] + byteToHex[arr[offset + 14]] + byteToHex[arr[offset + 15]]).toLowerCase();
+}
+
+// Unique ID creation requires a high quality random # generator. In the browser we therefore
+// require the crypto API and do not support built-in fallback to lower quality random number
+// generators (like Math.random()).
+
+var getRandomValues;
+var rnds8 = new Uint8Array(16);
+function rng() {
+  // lazy load so that environments that need to polyfill have a chance to do so
+  if (!getRandomValues) {
+    // getRandomValues needs to be invoked in a context where "this" is a Crypto implementation.
+    getRandomValues = typeof crypto !== 'undefined' && crypto.getRandomValues && crypto.getRandomValues.bind(crypto);
+    if (!getRandomValues) {
+      throw new Error('crypto.getRandomValues() not supported. See https://github.com/uuidjs/uuid#getrandomvalues-not-supported');
+    }
+  }
+  return getRandomValues(rnds8);
+}
+
+var randomUUID = typeof crypto !== 'undefined' && crypto.randomUUID && crypto.randomUUID.bind(crypto);
+var native = {
+  randomUUID
+};
+
+function v4(options, buf, offset) {
+  if (native.randomUUID && !buf && !options) {
+    return native.randomUUID();
+  }
+  options = options || {};
+  var rnds = options.random || (options.rng || rng)();
+
+  // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
+  rnds[6] = rnds[6] & 0x0f | 0x40;
+  rnds[8] = rnds[8] & 0x3f | 0x80;
+  return unsafeStringify(rnds);
+}
+
 var statePosition;
 (function (statePosition) {
     statePosition[statePosition["none"] = -1] = "none";
     statePosition[statePosition["first"] = 0] = "first";
     statePosition[statePosition["last"] = 1] = "last";
 })(statePosition || (statePosition = {}));
+var myState;
+(function (myState) {
+    myState[myState["none"] = 0] = "none";
+    myState[myState["first"] = 1] = "first";
+    myState[myState["middle"] = 2] = "middle";
+    myState[myState["finish"] = 3] = "finish";
+})(myState || (myState = {}));
+var mySide;
+(function (mySide) {
+    mySide[mySide["none"] = 0] = "none";
+    mySide[mySide["first"] = 1] = "first";
+    mySide[mySide["previous"] = 2] = "previous";
+    mySide[mySide["next"] = 3] = "next";
+    mySide[mySide["last"] = 4] = "last";
+})(mySide || (mySide = {}));
 var Paginator = /** @class */ (function (_super) {
     __extends(Paginator, _super);
     function Paginator(props) {
-        var _this = _super.call(this, props) || this;
+        var _this = this;
+        var _a;
+        _this = _super.call(this, props) || this;
+        _this.MyState = myState.none;
+        _this.list = [];
         _this.mapPage = new Map();
         _this.isAddMap = false;
         _this.refPaginator = React.createRef();
         _this.pages = 0;
         _this.statePosition = statePosition.none;
+        _this.mode = (_a = _this.props.mode) !== null && _a !== void 0 ? _a : 'base';
+        _this.isChet = function (n) { return !(n % 2); };
         _this.state = { TotalRows: 0, PageSize: 1, CurrentPage: 1 };
         return _this;
     }
@@ -105,61 +179,9 @@ var Paginator = /** @class */ (function (_super) {
         }
         this.setStatePaginator(this.state.TotalRows, val, this.state.PageSize);
     };
-    Paginator.prototype.innerLeft = function (list) {
-        var _this = this;
-        var _a;
-        if (this.props.first) {
-            list.push(React.createElement("button", { disabled: this.statePosition === statePosition.first, key: '45545', className: 'bsr-button-side', onClick: function () {
-                    if (_this.state.CurrentPage !== 1) {
-                        _this.Click(1);
-                    }
-                } }, this.props.first));
-        }
-        list.push(React.createElement("button", { disabled: this.statePosition === statePosition.first, key: '5656', className: 'bsr-button-side', onClick: function () {
-                var e = _this.state.CurrentPage - 1;
-                if (e > 0) {
-                    _this.Click(e);
-                }
-            } }, (_a = this.props.previous) !== null && _a !== void 0 ? _a : 'Previous'));
-    };
-    Paginator.prototype.renderLeftSide = function (list) {
-        var _a;
-        if ((_a = this.props.isVisibleSide) !== null && _a !== void 0 ? _a : true) {
-            this.innerLeft(list);
-            return;
-        }
-        if (this.state.CurrentPage > 1) {
-            this.innerLeft(list);
-        }
-    };
-    Paginator.prototype.innerRight = function (list, pages) {
-        var _this = this;
-        var _a;
-        list.push(React.createElement("button", { disabled: this.statePosition === statePosition.last, key: 'we4', className: 'bsr-button-side', onClick: function () {
-                var e = _this.state.CurrentPage + 1;
-                if (e <= pages) {
-                    _this.Click(e);
-                }
-            } }, (_a = this.props.next) !== null && _a !== void 0 ? _a : 'Next'));
-        if (this.props.last) {
-            list.push(React.createElement("button", { disabled: this.statePosition === statePosition.last, key: '4356', className: 'bsr-button-side', onClick: function () {
-                    _this.Click(pages);
-                } }, this.props.last));
-        }
-    };
-    Paginator.prototype.renderRightSide = function (list, pages) {
-        var _a;
-        if ((_a = this.props.isVisibleSide) !== null && _a !== void 0 ? _a : true) {
-            this.innerRight(list, pages);
-            return;
-        }
-        if (this.state.CurrentPage !== pages) {
-            this.innerRight(list, pages);
-        }
-    };
     Paginator.prototype.renderButton = function () {
-        var _this = this;
-        var _a, _b, _c;
+        var _a;
+        this.list.length = 0;
         if (!this.refPaginator.current)
             return;
         this.refPaginator.current.style.display = 'flex';
@@ -170,7 +192,6 @@ var Paginator = /** @class */ (function (_super) {
         //alert(this.state.CurrentPage+' '+this.state.PageSize+' '+this.state.TotalRows)
         this.statePosition = statePosition.none;
         this.isAddMap = false;
-        var list = [];
         this.pages = Math.ceil(this.state.TotalRows / this.state.PageSize);
         if (this.state.CurrentPage === 1) {
             this.statePosition = statePosition.first;
@@ -179,10 +200,10 @@ var Paginator = /** @class */ (function (_super) {
             this.statePosition = statePosition.last;
         }
         if (this.state.TotalRows <= this.state.PageSize || this.pages === 1) {
-            list.length = 0;
+            this.list.length = 0;
             this.refPaginator.current.style.display = 'none';
         }
-        var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 5;
+        var range = (_a = this.props.range) !== null && _a !== void 0 ? _a : 4;
         if (range <= 3) {
             range = 4;
         }
@@ -198,6 +219,7 @@ var Paginator = /** @class */ (function (_super) {
             appendPointPost = true;
             this.mapPage.clear();
             this.isAddMap = true;
+            this.MyState = myState.none;
         }
         else {
             if (this.pages <= range) {
@@ -205,60 +227,110 @@ var Paginator = /** @class */ (function (_super) {
                 delta = this.pages + 1;
                 this.mapPage.clear();
             }
-            else if (this.state.CurrentPage <= range - 1) {
+            else if (this.state.CurrentPage <= range - 2) {
                 this.mapPage.clear();
                 start = 1;
-                delta = range + 1;
+                switch (this.mode) {
+                    case "base": {
+                        delta = range + 1;
+                        break;
+                    }
+                    case "richBase": {
+                        delta = range + 1;
+                        break;
+                    }
+                    case "showEllipsis": {
+                        delta = range + 1 + 1;
+                        break;
+                    }
+                    default: {
+                        delta = range + 1;
+                        break;
+                    }
+                }
                 if (this.pages > range) {
                     appendPointPost = true;
                 }
+                this.MyState = myState.first;
             }
-            else if (this.state.CurrentPage >= range && this.state.CurrentPage < (this.pages - range + 2)) {
+            else if (this.state.CurrentPage <= (this.pages - range + 2)) {
                 this.isAddMap = true;
                 this.mapPage.clear();
                 var del = Math.ceil(range / 2);
                 appendPointPref = true;
                 appendPointPost = true;
-                start = this.state.CurrentPage - del;
-                delta = this.state.CurrentPage + range - del;
+                switch (this.mode) {
+                    case "richBase": {
+                        var delRich = Math.floor((range - 2) / 2);
+                        start = this.state.CurrentPage - delRich;
+                        delta = this.state.CurrentPage + delRich + (this.isChet(range) ? 0 : 1);
+                        break;
+                    }
+                    default: {
+                        start = this.state.CurrentPage - del;
+                        delta = this.state.CurrentPage + range - del;
+                        break;
+                    }
+                }
+                this.MyState = myState.middle;
             }
             else {
                 this.mapPage.clear();
-                //const del=Math.ceil(range/2)
                 var s = this.pages - range + 1;
                 appendPointPref = true;
-                start = s <= 0 ? 1 : s;
-                delta = this.pages + 1;
+                switch (this.mode) {
+                    case "base": {
+                        start = s <= 0 ? 1 : s;
+                        delta = this.pages + 1;
+                        break;
+                    }
+                    case "showEllipsis": {
+                        s = s - 1;
+                        start = s <= 0 ? 1 : s;
+                        delta = this.pages + 1;
+                        break;
+                    }
+                    default: {
+                        start = s <= 0 ? 1 : s;
+                        delta = this.pages + 1;
+                        break;
+                    }
+                }
+                this.MyState = myState.finish;
             }
         }
-        this.renderLeftSide(list);
+        this.appendButtonSide(mySide.first);
+        this.appendButtonSide(mySide.previous);
         if (appendPointPref) {
-            list.push(React.createElement("div", { key: 'point-prev', className: 'bsr-button-ellipsis' }, (_b = this.props.ellipsis) !== null && _b !== void 0 ? _b : '...'));
+            this.appendButtonEllipsis();
         }
-        var _loop_1 = function (i) {
-            if (i > start && i < delta - 1 && this_1.isAddMap) {
-                this_1.mapPage.set(i, {
+        if (this.mode === 'richBase' && appendPointPref) {
+            this.appendButtonPage(1);
+            this.appendButtonEllipsisRichBase();
+        }
+        for (var i = start; i < delta; i++) {
+            if (i > start && i < delta - 1 && this.isAddMap) {
+                this.mapPage.set(i, {
                     start: start,
                     delta: delta
                 });
             }
             var selectClass = '';
-            if (this_1.state.CurrentPage === i) {
+            if (this.state.CurrentPage === i) {
                 selectClass = 'bsr-button-selection';
             }
-            list.push(React.createElement("button", { "data-pg": i, style: this_1.props.styleButton, key: "".concat(i, "-page"), className: 'bsr-button ' + selectClass, onClick: function () {
-                    _this.Click(i);
-                } }, i));
-        };
-        var this_1 = this;
-        for (var i = start; i < delta; i++) {
-            _loop_1(i);
+            this.appendButtonPage(i, selectClass);
+        }
+        if (this.mode === 'richBase' && appendPointPost) {
+            this.appendButtonEllipsisRichBase();
+            this.appendButtonPage(this.pages);
         }
         if (appendPointPost) {
-            list.push(React.createElement("div", { key: 'point-pres', className: 'bsr-button-ellipsis' }, (_c = this.props.ellipsis) !== null && _c !== void 0 ? _c : '...'));
+            this.appendButtonEllipsis();
         }
-        this.renderRightSide(list, this.pages);
-        return list;
+        this.appendButtonSide(mySide.next);
+        this.appendButtonSide(mySide.last);
+        return this.list;
     };
     Object.defineProperty(Paginator.prototype, "Paginator", {
         get: function () {
@@ -269,7 +341,87 @@ var Paginator = /** @class */ (function (_super) {
     });
     Paginator.prototype.render = function () {
         var _a;
-        return (React.createElement("div", { style: this.props.style, ref: this.refPaginator, id: this.props.id, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'bsr-wrapper-paginator' }, this.renderButton()));
+        return (React.createElement("div", { style: this.props.style, ref: this.refPaginator, id: this.props.id, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'bsr-paginator' }, this.renderButton()));
+    };
+    Paginator.prototype.appendButtonEllipsis = function () {
+        var _a;
+        if (this.mode === "showEllipsis") {
+            this.list.push(React.createElement("button", { key: v4(), className: 'bsr-button-ellipsis' }, (_a = this.props.ellipsis) !== null && _a !== void 0 ? _a : '...'));
+        }
+    };
+    Paginator.prototype.appendButtonEllipsisRichBase = function () {
+        var _a;
+        this.list.push(React.createElement("button", { key: 'sdsd' + v4(), className: 'bsr-button-ellipsis' }, (_a = this.props.ellipsis) !== null && _a !== void 0 ? _a : '...'));
+    };
+    Paginator.prototype.appendButtonPage = function (label, classSelected) {
+        var _this = this;
+        this.list.push(React.createElement("button", { "data-pg": label, style: this.props.styleButton, key: v4(), className: 'bsr-button ' + classSelected, onClick: function () {
+                _this.Click(label);
+            } }, label));
+    };
+    Paginator.prototype.appendButtonSide = function (side) {
+        var _this = this;
+        switch (side) {
+            case mySide.none: {
+                return;
+            }
+            case mySide.first: {
+                if (this.props.first) {
+                    var myStyle = undefined;
+                    if (this.state.CurrentPage <= 1 && this.props.useHidingSides) {
+                        myStyle = { visibility: "hidden" };
+                    }
+                    this.list.push(React.createElement("button", { style: myStyle, disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-side', onClick: function () {
+                            if (_this.state.CurrentPage !== 1) {
+                                _this.Click(1);
+                            }
+                        } }, this.props.first));
+                }
+                break;
+            }
+            case mySide.previous: {
+                if (this.props.previous) {
+                    var myStyle = undefined;
+                    if (this.state.CurrentPage <= 1 && this.props.useHidingSides) {
+                        myStyle = { visibility: "hidden" };
+                    }
+                    this.list.push(React.createElement("button", { style: myStyle, disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-side', onClick: function () {
+                            var e = _this.state.CurrentPage - 1;
+                            if (e > 0) {
+                                _this.Click(e);
+                            }
+                        } }, this.props.previous));
+                }
+                break;
+            }
+            case mySide.next: {
+                if (this.props.next) {
+                    var myStyle = undefined;
+                    if (this.state.CurrentPage === this.pages && this.props.useHidingSides) {
+                        myStyle = { visibility: "hidden" };
+                    }
+                    this.list.push(React.createElement("button", { style: myStyle, disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-side', onClick: function () {
+                            var e = _this.state.CurrentPage + 1;
+                            if (e <= _this.pages) {
+                                _this.Click(e);
+                            }
+                        } }, this.props.next));
+                }
+                break;
+            }
+            case mySide.last: {
+                if (this.props.last) {
+                    var myStyle = undefined;
+                    if (this.state.CurrentPage === this.pages && this.props.useHidingSides) {
+                        myStyle = { visibility: "hidden" };
+                    }
+                    this.list.push(React.createElement("button", { style: myStyle, disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-side', onClick: function () {
+                            _this.Click(_this.pages);
+                        } }, this.props.last));
+                }
+                break;
+            }
+        }
     };
     return Paginator;
 }(React.Component));
