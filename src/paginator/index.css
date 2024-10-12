@@ -27,7 +27,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
-    font-weight: var(--bsr-font-weight);
+    font-weight: normal;
     color: #0a708d;
     border: none;
     border-radius: 0;
@@ -65,7 +65,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
-    font-weight: var(--bsr-font-weight);
+    font-weight: normal;
     color: var(--bsr-color);
     border: none;
     border-radius: 0;
@@ -82,7 +82,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
-    font-weight: var(--bsr-font-weight);
+    font-weight: normal;
     color: var(--bsr-color);
     border: none;
     border-radius: 0;
