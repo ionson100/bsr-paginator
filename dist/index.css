@@ -76,6 +76,7 @@
     font-size: var(--bsr-font-size);
     color: var(--bsr-color);
     border: none;
+    outline: none;
 
     background-color: transparent;
     cursor: pointer;
@@ -91,6 +92,8 @@
     background-color: transparent;
     opacity: 50%;
     cursor: not-allowed;
+    border: none;
+    outline: none;
 }
 .bsr-button-move:focus {
     background-color: #dedcdc;
