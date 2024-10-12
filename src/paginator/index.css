@@ -4,6 +4,8 @@
     --bsr-height:30px;
     --bsr-min-width:35px;
     --bsr-color: #090909;
+    --bsr-font-weight:normal
+
 }
 
 .bsr-paginator {
@@ -25,6 +27,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
+    font-weight: var(--bsr-font-weight);
     color: #0a708d;
     border: none;
     border-radius: 0;
@@ -62,6 +65,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
+    font-weight: var(--bsr-font-weight);
     color: var(--bsr-color);
     border: none;
     border-radius: 0;
@@ -78,6 +82,7 @@
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
     font-size: var(--bsr-font-size);
+    font-weight: var(--bsr-font-weight);
     color: var(--bsr-color);
     border: none;
     border-radius: 0;
