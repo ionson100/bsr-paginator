@@ -6,19 +6,27 @@ export type PaginatorProperty = {
     first?: string | ReactElement | undefined | null;
     last?: string | ReactElement | undefined | null;
     ellipsis?: string | ReactElement | undefined | null;
-    onButtonClick?: (page: number, pages: number) => void;
-    useHidingSides?: boolean;
+    onPageClick?: (page: number, sender?: HTMLButtonElement) => void;
+    useHidingMove?: boolean;
     range?: number;
     className?: string;
-    useDoubleSending?: boolean;
+    useMoreSends?: boolean;
     style?: React.CSSProperties | undefined;
     styleButton?: React.CSSProperties | undefined;
+    styleEllipsis?: React.CSSProperties | undefined;
+    styleButtonMove?: React.CSSProperties | undefined;
+    accessKeyFirst?: string | undefined;
+    accessKeyPrevious?: string | undefined;
+    accessKeyNext?: string | undefined;
+    accessKeyLast?: string | undefined;
     mode?: 'base' | 'richBase' | 'showEllipsis';
 };
 export type ObserverPaginator = {
     TotalRows: number;
     CurrentPage: number;
     PageSize: number;
+    Range: number;
+    Mode: string;
 };
 declare enum mySide {
     none = 0,
@@ -28,23 +36,28 @@ declare enum mySide {
     last = 4
 }
 export declare class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
-    private MyState;
+    private setClick;
     private list;
     private mapPage;
     private isAddMap;
     private refPaginator;
     private pages;
-    private statePosition;
+    private range;
     private mode;
     constructor(props: Readonly<PaginatorProperty>);
     private setStatePaginator;
     SetState(totalRows?: number, pageSize?: number, currentPage?: number, callback?: () => void): void;
+    SetRange(value: number, callback?: () => void): void;
+    SetMode(value: 'base' | 'richBase' | 'showEllipsis', callback?: () => void): void;
     get State(): {
         readonly PageSize: number;
         readonly PagesCount: number;
         readonly TotalRows: number;
         readonly CurrentPage: number;
+        readonly Range: number;
+        readonly Mode: string;
     };
+    SetCurrentPageAndClick(page: number, callback?: () => void): void;
     private Click;
     isChet: (n: number) => boolean;
     private renderButton;
@@ -53,6 +66,7 @@ export declare class Paginator extends React.Component<PaginatorProperty, Observ
     appendButtonEllipsis(): void;
     appendButtonEllipsisRichBase(): void;
     appendButtonPage(label: number, classSelected?: string): void;
+    builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined;
     appendButtonSide(side: mySide): void;
 }
 export {};

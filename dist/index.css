@@ -19,7 +19,7 @@
 
 
 
-.bsr-button {
+.bsr-button-page {
     height: var(--bsr-height);
     width: fit-content;
     min-width: var(--bsr-min-width);
@@ -31,10 +31,10 @@
     background-color: #c9eff6;
     cursor: pointer;
 }
-.bsr-button:hover {
+.bsr-button-page:hover {
     background-color: #9ae5f8;
 }
-.bsr-button:focus {
+.bsr-button-page:focus {
     background-color: #5799ef;
     border: none;
     outline: none;
@@ -68,7 +68,7 @@
 }
 
 
-.bsr-button-side {
+.bsr-button-move {
     height: var(--bsr-height);
     width: fit-content;
     min-width: var(--bsr-min-width);
@@ -81,14 +81,19 @@
     cursor: pointer;
 
 }
-.bsr-button-side:hover{
+.bsr-button-move:hover{
     background-color: #dedcdc;
 }
-.bsr-button-side:active{
+.bsr-button-move:active{
     background-color: #c7c6c6;
 }
-.bsr-button-side:disabled{
+.bsr-button-move:disabled{
     background-color: transparent;
     opacity: 50%;
     cursor: not-allowed;
+}
+.bsr-button-move:focus {
+    background-color: #dedcdc;
+    border: none;
+    outline: none;
 }
