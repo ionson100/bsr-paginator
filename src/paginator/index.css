@@ -27,6 +27,8 @@
     font-size: var(--bsr-font-size);
     color: #0a708d;
     border: none;
+    border-radius: 0;
+    outline: none;
 
     background-color: #c9eff6;
     cursor: pointer;
@@ -62,6 +64,8 @@
     font-size: var(--bsr-font-size);
     color: var(--bsr-color);
     border: none;
+    border-radius: 0;
+    outline: none;
     background: transparent;
     cursor: default;
 
@@ -76,6 +80,7 @@
     font-size: var(--bsr-font-size);
     color: var(--bsr-color);
     border: none;
+    border-radius: 0;
     outline: none;
 
     background-color: transparent;
