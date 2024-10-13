@@ -8,14 +8,14 @@ type PaginatorProperty = {
     last?: string | ReactElement | undefined | null;
     ellipsis?: string | ReactElement | undefined | null;
     onPageClick?: (page: number, sender?: HTMLButtonElement) => void;
-    useHidingNavigate?: boolean;
+    isHidingNavigate?: boolean;
     range?: number;
     className?: string;
-    useMoreSends?: boolean;
+    isMoreSends?: boolean;
     style?: React.CSSProperties | undefined;
     styleButton?: React.CSSProperties | undefined;
     styleEllipsis?: React.CSSProperties | undefined;
-    styleButtonNavigate?: React.CSSProperties | undefined;
+    styleNavigate?: React.CSSProperties | undefined;
     accessKeyFirst?: string | undefined;
     accessKeyPrevious?: string | undefined;
     accessKeyNext?: string | undefined;

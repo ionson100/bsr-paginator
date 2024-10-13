@@ -213,7 +213,7 @@ var Paginator = /** @class */ (function (_super) {
     };
     Paginator.prototype.Click = function (val, sender) {
         if (this.props.onPageClick) {
-            if (this.props.useMoreSends) {
+            if (this.props.isMoreSends) {
                 this.props.onPageClick(val, sender);
             }
             else {
@@ -405,7 +405,7 @@ var Paginator = /** @class */ (function (_super) {
             } }, label));
     };
     Paginator.prototype.builderStyle = function (pred) {
-        var myStyle = this.props.styleButtonNavigate;
+        var myStyle = this.props.styleNavigate;
         if (pred) {
             if (myStyle) {
                 myStyle = __assign(__assign({}, myStyle), { visibility: "hidden" });
@@ -425,7 +425,7 @@ var Paginator = /** @class */ (function (_super) {
             case mySide.first: {
                 if (this.props.first) {
                     // eslint-disable-next-line jsx-a11y/no-access-key
-                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyFirst, "data-navigate": 'first', style: this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate), disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
+                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyFirst, "data-navigate": 'first', style: this.builderStyle(this.state.CurrentPage <= 1 && this.props.isHidingNavigate), disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
                             if (_this.state.CurrentPage !== 1) {
                                 _this.Click(1, e.target);
                             }
@@ -436,7 +436,7 @@ var Paginator = /** @class */ (function (_super) {
             case mySide.previous: {
                 if (this.props.previous) {
                     // eslint-disable-next-line jsx-a11y/no-access-key
-                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyPrevious, "data-navigate": 'previous', style: this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate), disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
+                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyPrevious, "data-navigate": 'previous', style: this.builderStyle(this.state.CurrentPage <= 1 && this.props.isHidingNavigate), disabled: this.state.CurrentPage <= 1, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
                             var value = _this.state.CurrentPage - 1;
                             if (value > 0) {
                                 _this.Click(value, e.target);
@@ -448,7 +448,7 @@ var Paginator = /** @class */ (function (_super) {
             case mySide.next: {
                 if (this.props.next) {
                     // eslint-disable-next-line jsx-a11y/no-access-key
-                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyNext, "data-navigate": 'next', style: this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate), disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
+                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyNext, "data-navigate": 'next', style: this.builderStyle(this.state.CurrentPage === this.pages && this.props.isHidingNavigate), disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
                             var value = _this.state.CurrentPage + 1;
                             if (value <= _this.pages) {
                                 _this.Click(value, e.target);
@@ -460,7 +460,7 @@ var Paginator = /** @class */ (function (_super) {
             case mySide.last: {
                 if (this.props.last) {
                     // eslint-disable-next-line jsx-a11y/no-access-key
-                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyLast, "data-navigate": 'last', style: this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate), disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
+                    this.list.push(React.createElement("button", { accessKey: this.props.accessKeyLast, "data-navigate": 'last', style: this.builderStyle(this.state.CurrentPage === this.pages && this.props.isHidingNavigate), disabled: this.state.CurrentPage === this.pages, key: v4(), className: 'bsr-button-navigate', onClick: function (e) {
                             _this.Click(_this.pages, e.target);
                         } }, this.props.last));
                 }

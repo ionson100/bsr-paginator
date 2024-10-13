@@ -10,14 +10,14 @@ export type PaginatorProperty = {
     last?: string | ReactElement | undefined | null
     ellipsis?: string | ReactElement | undefined | null
     onPageClick?: (page: number, sender?:HTMLButtonElement) => void
-    useHidingNavigate?: boolean
+    isHidingNavigate?: boolean
     range?: number
     className?: string
-    useMoreSends?: boolean
+    isMoreSends?: boolean
     style?: React.CSSProperties | undefined,
     styleButton?: React.CSSProperties | undefined,
     styleEllipsis?: React.CSSProperties | undefined,
-    styleButtonNavigate?: React.CSSProperties | undefined,
+    styleNavigate?: React.CSSProperties | undefined,
     accessKeyFirst?: string | undefined,
     accessKeyPrevious?: string | undefined
     accessKeyNext?: string | undefined
@@ -159,7 +159,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     private Click(val: number,sender:HTMLButtonElement) {
         if (this.props.onPageClick) {
 
-            if (this.props.useMoreSends) {
+            if (this.props.isMoreSends) {
                 this.props.onPageClick(val,sender)
             } else {
                 if (this.state.CurrentPage !== val) {
@@ -405,7 +405,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     }
 
     builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined {
-        let myStyle = this.props.styleButtonNavigate;
+        let myStyle = this.props.styleNavigate;
         if (pred) {
             if (myStyle) {
                 myStyle = {...myStyle, ...{visibility: "hidden"}}
@@ -429,7 +429,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     this.list.push(<button
                         accessKey={this.props.accessKeyFirst}
                         data-navigate={'first'}
-                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate)}
+                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.isHidingNavigate)}
                         disabled={this.state.CurrentPage <= 1}
                         key={getKey()}
                         className={'bsr-button-navigate'}
@@ -448,7 +448,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     this.list.push(<button
                         accessKey={this.props.accessKeyPrevious}
                         data-navigate={'previous'}
-                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate)}
+                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.isHidingNavigate)}
                         disabled={this.state.CurrentPage <= 1}
                         key={getKey()}
                         className={'bsr-button-navigate'}
@@ -469,7 +469,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     this.list.push(<button
                         accessKey={this.props.accessKeyNext}
                         data-navigate={'next'}
-                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate)}
+                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.isHidingNavigate)}
                         disabled={this.state.CurrentPage === this.pages}
                         key={getKey()}
                         className={'bsr-button-navigate'}
@@ -489,7 +489,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     this.list.push(<button
                         accessKey={this.props.accessKeyLast}
                         data-navigate={'last'}
-                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate)}
+                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.isHidingNavigate)}
                         disabled={this.state.CurrentPage === this.pages}
                         key={getKey()}
                         className={'bsr-button-navigate'}
