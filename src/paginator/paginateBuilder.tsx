@@ -227,27 +227,8 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
 
             } else if (this.state.CurrentPage <= range - 1) {
                 this.mapPage.clear()
-
                 start = 1
-                switch (this.mode) {
-                    case "base": {
-                        delta = range + 1;
-                        break
-                    }
-                    case "richBase": {
-                        delta = range + 1;
-                        break
-                    }
-                    case "showEllipsis": {
-                        delta = range + 1 + 1;
-                        break
-                    }
-
-                    default: {
-                        delta = range + 1;
-                        break
-                    }
-                }
+                delta = range + 1 + 1;
                 if (this.pages > range) {
                     appendPointPost = true;
                 }
