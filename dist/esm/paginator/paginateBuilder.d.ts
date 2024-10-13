@@ -6,7 +6,7 @@ export type PaginatorProperty = {
     first?: string | ReactElement | undefined | null;
     last?: string | ReactElement | undefined | null;
     ellipsis?: string | ReactElement | undefined | null;
-    onPageClick?: (page: number, sender?: HTMLButtonElement) => void;
+    onChange?: (page: number, sender?: HTMLButtonElement) => void;
     isHidingNavigate?: boolean;
     range?: number;
     className?: string;

@@ -212,13 +212,13 @@ var Paginator = /** @class */ (function (_super) {
         }, callback);
     };
     Paginator.prototype.Click = function (val, sender) {
-        if (this.props.onPageClick) {
+        if (this.props.onChange) {
             if (this.props.isMoreSends) {
-                this.props.onPageClick(val, sender);
+                this.props.onChange(val, sender);
             }
             else {
                 if (this.state.CurrentPage !== val) {
-                    this.props.onPageClick(val, sender);
+                    this.props.onChange(val, sender);
                 }
             }
         }
@@ -354,8 +354,8 @@ var Paginator = /** @class */ (function (_super) {
                 if (this_1.setClick) {
                     this_1.setClick = false;
                     setTimeout(function () {
-                        if (_this.props.onPageClick) {
-                            _this.props.onPageClick(i, undefined);
+                        if (_this.props.onChange) {
+                            _this.props.onChange(i, undefined);
                         }
                     });
                 }

@@ -9,7 +9,7 @@ export type PaginatorProperty = {
     first?: string | ReactElement | undefined | null
     last?: string | ReactElement | undefined | null
     ellipsis?: string | ReactElement | undefined | null
-    onPageClick?: (page: number, sender?:HTMLButtonElement) => void
+    onChange?: (page: number, sender?:HTMLButtonElement) => void
     isHidingNavigate?: boolean
     range?: number
     className?: string
@@ -157,13 +157,13 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     }
 
     private Click(val: number,sender:HTMLButtonElement) {
-        if (this.props.onPageClick) {
+        if (this.props.onChange) {
 
             if (this.props.isMoreSends) {
-                this.props.onPageClick(val,sender)
+                this.props.onChange(val,sender)
             } else {
                 if (this.state.CurrentPage !== val) {
-                    this.props.onPageClick(val,sender)
+                    this.props.onChange(val,sender)
                 }
             }
         }
@@ -330,8 +330,8 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                 if (this.setClick) {
                     this.setClick = false
                     setTimeout(() => {
-                        if (this.props.onPageClick) {
-                            this.props.onPageClick(i,undefined)
+                        if (this.props.onChange) {
+                            this.props.onChange(i,undefined)
                         }
                     })
                 }
