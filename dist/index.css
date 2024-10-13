@@ -4,7 +4,7 @@
     --bsr-height:30px;
     --bsr-min-width:35px;
     --bsr-color: #090909;
-    --bsr-font-weight:normal
+    --bsr-padding:0
 
 }
 
@@ -22,6 +22,7 @@
 
 
 .bsr-button-page {
+    padding: var(--bsr-padding);
     height: var(--bsr-height);
     width: fit-content;
     min-width: var(--bsr-min-width);
@@ -64,6 +65,7 @@
     width: fit-content;
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
+    padding: var(--bsr-padding);
     font-size: var(--bsr-font-size);
     font-weight: normal;
     color: var(--bsr-color);
@@ -78,6 +80,7 @@
 
 .bsr-button-move {
     height: var(--bsr-height);
+    padding: var(--bsr-padding);
     width: fit-content;
     min-width: var(--bsr-min-width);
     margin: var(--bsr-margin);
