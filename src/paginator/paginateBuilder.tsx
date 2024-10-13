@@ -10,14 +10,14 @@ export type PaginatorProperty = {
     last?: string | ReactElement | undefined | null
     ellipsis?: string | ReactElement | undefined | null
     onPageClick?: (page: number, sender?:HTMLButtonElement) => void
-    useHidingMove?: boolean
+    useHidingNavigate?: boolean
     range?: number
     className?: string
     useMoreSends?: boolean
     style?: React.CSSProperties | undefined,
     styleButton?: React.CSSProperties | undefined,
     styleEllipsis?: React.CSSProperties | undefined,
-    styleButtonMove?: React.CSSProperties | undefined,
+    styleButtonNavigate?: React.CSSProperties | undefined,
     accessKeyFirst?: string | undefined,
     accessKeyPrevious?: string | undefined
     accessKeyNext?: string | undefined
@@ -405,7 +405,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     }
 
     builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined {
-        let myStyle = this.props.styleButtonMove;
+        let myStyle = this.props.styleButtonNavigate;
         if (pred) {
             if (myStyle) {
                 myStyle = {...myStyle, ...{visibility: "hidden"}}
@@ -428,11 +428,11 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     // eslint-disable-next-line jsx-a11y/no-access-key
                     this.list.push(<button
                         accessKey={this.props.accessKeyFirst}
-                        data-move={'first'}
-                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingMove)}
+                        data-navigate={'first'}
+                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate)}
                         disabled={this.state.CurrentPage <= 1}
                         key={getKey()}
-                        className={'bsr-button-move'}
+                        className={'bsr-button-navigate'}
                         onClick={(e) => {
                             if (this.state.CurrentPage !== 1) {
                                 this.Click(1,e.target as HTMLButtonElement)
@@ -447,11 +447,11 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     // eslint-disable-next-line jsx-a11y/no-access-key
                     this.list.push(<button
                         accessKey={this.props.accessKeyPrevious}
-                        data-move={'previous'}
-                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingMove)}
+                        data-navigate={'previous'}
+                        style={this.builderStyle(this.state.CurrentPage <= 1 && this.props.useHidingNavigate)}
                         disabled={this.state.CurrentPage <= 1}
                         key={getKey()}
-                        className={'bsr-button-move'}
+                        className={'bsr-button-navigate'}
                         onClick={(e) => {
 
                             const value = this.state.CurrentPage - 1
@@ -468,11 +468,11 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     // eslint-disable-next-line jsx-a11y/no-access-key
                     this.list.push(<button
                         accessKey={this.props.accessKeyNext}
-                        data-move={'next'}
-                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingMove)}
+                        data-navigate={'next'}
+                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate)}
                         disabled={this.state.CurrentPage === this.pages}
                         key={getKey()}
-                        className={'bsr-button-move'}
+                        className={'bsr-button-navigate'}
                         onClick={(e) => {
                             const value = this.state.CurrentPage + 1
                             if (value <= this.pages) {
@@ -488,11 +488,11 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                     // eslint-disable-next-line jsx-a11y/no-access-key
                     this.list.push(<button
                         accessKey={this.props.accessKeyLast}
-                        data-move={'last'}
-                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingMove)}
+                        data-navigate={'last'}
+                        style={this.builderStyle(this.state.CurrentPage === this.pages && this.props.useHidingNavigate)}
                         disabled={this.state.CurrentPage === this.pages}
                         key={getKey()}
-                        className={'bsr-button-move'}
+                        className={'bsr-button-navigate'}
                         onClick={(e) => {
                             this.Click(this.pages,e.target as HTMLButtonElement)
                         }}
