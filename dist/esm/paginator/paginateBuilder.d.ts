@@ -28,13 +28,6 @@ export type ObserverPaginator = {
     Range: number;
     Mode: string;
 };
-declare enum mySide {
-    none = 0,
-    first = 1,
-    previous = 2,
-    next = 3,
-    last = 4
-}
 export declare class Paginator extends React.Component<PaginatorProperty, ObserverPaginator> {
     private setClick;
     private list;
@@ -59,14 +52,13 @@ export declare class Paginator extends React.Component<PaginatorProperty, Observ
     };
     SetCurrentPageAndClick(page: number, callback?: () => void): void;
     private Click;
-    isChet: (n: number) => boolean;
+    private isChet;
     private renderButton;
     get Paginator(): HTMLDivElement | null;
     render(): React.JSX.Element;
-    appendButtonEllipsis(): void;
-    appendButtonEllipsisRichBase(): void;
-    appendButtonPage(label: number, classSelected?: string): void;
-    builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined;
-    appendButtonSide(side: mySide): void;
+    private appendButtonEllipsis;
+    private appendButtonEllipsisRichBase;
+    private appendButtonPage;
+    private builderStyle;
+    private appendButtonSide;
 }
-export {};

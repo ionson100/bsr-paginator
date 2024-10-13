@@ -170,7 +170,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
         this.setStatePaginator(this.state.TotalRows, val, this.state.PageSize)
     }
 
-    isChet = (n: number) => !(n % 2);
+    private isChet = (n: number) => !(n % 2);
 
     private renderButton() {
 
@@ -374,7 +374,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
         );
     }
 
-    appendButtonEllipsis() {
+    private appendButtonEllipsis() {
         if (this.mode === "showEllipsis") {
             this.list.push(<button
                 data-ellipsis={1}
@@ -385,7 +385,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
         }
     }
 
-    appendButtonEllipsisRichBase() {
+    private appendButtonEllipsisRichBase() {
 
         this.list.push(<button
             key={getKey()}
@@ -394,7 +394,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
             className={'bsr-button-ellipsis'}>{this.props.ellipsis ?? '...'}</button>)
     }
 
-    appendButtonPage(label: number, classSelected?: string) {
+    private appendButtonPage(label: number, classSelected?: string) {
         this.list.push(<button data-page={label}
                                style={this.props.styleButton}
                                key={getKey()}
@@ -404,7 +404,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
                                }}>{label}</button>)
     }
 
-    builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined {
+    private builderStyle(pred: false | boolean | undefined): React.CSSProperties | undefined {
         let myStyle = this.props.styleNavigate;
         if (pred) {
             if (myStyle) {
@@ -417,7 +417,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
         return myStyle;
     }
 
-    appendButtonSide(side: mySide) {
+    private appendButtonSide(side: mySide) {
         switch (side) {
             case mySide.none: {
                 return

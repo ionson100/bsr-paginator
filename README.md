@@ -13,39 +13,34 @@ npm install --save bsr-paginator
 ## Usage
 
 ```tsx
-function App() {
-    const refPag=useRef<Paginator>(null)
-    const [state, setState] = useState('')
-    useEffect(()=>{
-        refPag.current!.SetState(500, 10, 1, () => {
-            writeState()
-        })
-    })
-    function writeState(){
-        setState(`total:${refPag.current!.State.TotalRows}
-         pageSize:${refPag.current!.State.PageSize} 
-         currentPage:${refPag.current!.State.CurrentPage} 
-         pages: ${refPag.current!.State.PagesCount} 
-         Range:${refPag.current!.State.Range} 
-         mode:${refPag.current!.State.Mode}`)
-    }
+import {useEffect, useRef, useState} from "react";
+import {Paginator} from 'bsr-paginator'
+import 'bsr-paginator/dist/index.css'
+
+export function App() {
+    const [myState, setMyState] = useState('');
+    const refPaginator = useRef<Paginator>(null)
+    useEffect(() => {
+        /*fetching SetState(totalRows, pageSize,currentPage)*/
+        refPaginator.current!.SetState(500, 10, 1)
+    }, [])
 
     return (
-        <div>
-            <div>{state}</div>
-            
+        <div  style={{textAlign:"center",width:"fit-content"}} >
+            <div>{myState}</div>
             <Paginator
-                next={'>'}
+                range={10}
+                ref={refPaginator}
                 previous={'<'}
-                last={'>>'}
+                next={'>'}
                 first={'<<'}
-                ref={refPag}
-                onPageClick={(page,sender) => {
-                    setState(`page:${page} of ${refPag.current!.State.PagesCount}`)
+                last={'>>'}
+                onChange={(page) => {
+                    setMyState(page + " page of " + refPaginator.current!.State.PagesCount)
                 }}
             />
         </div>
-    );
+    )
 }
 ```
 
