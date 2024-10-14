@@ -363,6 +363,7 @@ export class Paginator extends React.Component<PaginatorProperty, ObserverPagina
     render() {
         return (
             <div
+                data-paginator={1}
                 style={this.props.style}
                 ref={this.refPaginator}
                 id={this.props.id}

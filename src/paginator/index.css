@@ -7,6 +7,18 @@
     --bsr-padding:0
 
 }
+[data-paginator] button{
+    padding: var(--bsr-padding);
+    height: var(--bsr-height);
+    width: fit-content;
+    min-width: var(--bsr-min-width);
+    margin: var(--bsr-margin);
+    font-size: var(--bsr-font-size);
+    font-weight: normal;
+    border: none;
+    border-radius: 0;
+    outline: none;
+}
 
 .bsr-paginator {
     display: none;
@@ -22,18 +34,7 @@
 
 
 .bsr-button-page {
-    padding: var(--bsr-padding);
-    height: var(--bsr-height);
-    width: fit-content;
-    min-width: var(--bsr-min-width);
-    margin: var(--bsr-margin);
-    font-size: var(--bsr-font-size);
-    font-weight: normal;
     color: #0a708d;
-    border: none;
-    border-radius: 0;
-    outline: none;
-
     background-color: #c9eff6;
     cursor: pointer;
 }
@@ -42,8 +43,6 @@
 }
 .bsr-button-page:focus {
     background-color: #5799ef;
-    border: none;
-    outline: none;
     color: white;
 }
 
@@ -60,37 +59,14 @@
 
 
 .bsr-button-ellipsis {
-
-    height: var(--bsr-height);
-    width: fit-content;
-    min-width: var(--bsr-min-width);
-    margin: var(--bsr-margin);
-    padding: var(--bsr-padding);
-    font-size: var(--bsr-font-size);
-    font-weight: normal;
-    color: var(--bsr-color);
-    border: none;
-    border-radius: 0;
-    outline: none;
     background: transparent;
     cursor: default;
-
+    color: var(--bsr-color);
 }
 
 
 .bsr-button-navigate {
-    height: var(--bsr-height);
-    padding: var(--bsr-padding);
-    width: fit-content;
-    min-width: var(--bsr-min-width);
-    margin: var(--bsr-margin);
-    font-size: var(--bsr-font-size);
-    font-weight: normal;
     color: var(--bsr-color);
-    border: none;
-    border-radius: 0;
-    outline: none;
-
     background-color: transparent;
     cursor: pointer;
 

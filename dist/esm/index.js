@@ -384,7 +384,7 @@ var Paginator = /** @class */ (function (_super) {
     });
     Paginator.prototype.render = function () {
         var _a;
-        return (React.createElement("div", { style: this.props.style, ref: this.refPaginator, id: this.props.id, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'bsr-paginator' }, this.renderButton()));
+        return (React.createElement("div", { "data-paginator": 1, style: this.props.style, ref: this.refPaginator, id: this.props.id, className: (_a = this.props.className) !== null && _a !== void 0 ? _a : 'bsr-paginator' }, this.renderButton()));
     };
     Paginator.prototype.appendButtonEllipsis = function () {
         var _a;
